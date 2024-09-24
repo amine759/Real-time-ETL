@@ -7,7 +7,10 @@ libraryDependencies ++= Seq(
   "org.apache.kafka" %% "kafka-streams-scala" % "3.5.2",
   "org.apache.kafka" % "kafka-clients" % "3.5.2",
   "org.scala-lang" % "scala-library" % "2.13.14",
-  "org.scala-lang.modules" %% "scala-collection-compat" % "2.10.0"
+  "ch.qos.logback" % "logback-classic" % "1.2.10", // Check for the latest version
+  "org.scala-lang.modules" %% "scala-collection-compat" % "2.10.0",
+  "io.circe" %% "circe-generic" % "0.14.3",
+  "io.circe" %% "circe-parser" % "0.14.3"
 )
 
 resolvers += "Maven Central" at "https://repo1.maven.org/maven2/"
