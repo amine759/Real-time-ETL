@@ -1,13 +1,15 @@
 name := "kafka-streams"
+version := "0.1"
 
-version := "1.0"
-
-scalaVersion := "3.3.1"
+scalaVersion := "2.13.14"
 
 libraryDependencies ++= Seq(
-  "org.apache.kafka" % "kafka-clients" % "3.5.1",     // Kafka client library
-  "org.apache.kafka" % "kafka-streams" % "3.5.1",     // Kafka Streams library
-  "org.slf4j" % "slf4j-simple" % "1.7.36",             // SLF4J for logging
-  "com.typesafe.play" %% "play-json" % "2.10.0-RC7"    // Play JSON library for JSON parsing
+  "org.apache.kafka" %% "kafka-streams-scala" % "3.5.2",
+  "org.apache.kafka" % "kafka-clients" % "3.5.2",
+  "org.scala-lang" % "scala-library" % "2.13.14",
+  "org.scala-lang.modules" %% "scala-collection-compat" % "2.10.0"
 )
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
+
+resolvers += "Maven Central" at "https://repo1.maven.org/maven2/"
+
+// Add any other dependencies you need

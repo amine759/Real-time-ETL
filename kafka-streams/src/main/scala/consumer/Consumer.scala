@@ -17,7 +17,7 @@ object Consumer extends App {
   val consumer = new KafkaConsumer[String, String](props)
 
   // Subscribe to multiple topics
-  consumer.subscribe(java.util.Arrays.asList("topic1", "topic2"))
+  consumer.subscribe(java.util.Arrays.asList("transform-topic"))
 
   // Poll for new data from both topics
   while (true) {
