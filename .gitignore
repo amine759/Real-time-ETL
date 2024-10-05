@@ -11,15 +11,12 @@ target/
 kafka-streams/target/
 # If you have any other target directories in submodules, you might want to include those as well
 
-# IDE specific files
+# IDE specific files (I use neovim btw)
 .idea/
 *.iml
 *.ipr
 *.iws
 *.hprof
-
-# Scala specific files
-*.scala
 
 # Archive files
 archive/
@@ -32,4 +29,3 @@ Thumbs.db
 *.swp
 *.swo
 *.bak
-
