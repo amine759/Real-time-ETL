@@ -3,7 +3,7 @@ version := "0.1"
 
 scalaVersion := "2.13.14"
 
-librarydependencies ++= Seq(
+libraryDependencies ++= Seq(
   "org.apache.kafka" %% "kafka-streams-scala" % "3.5.2",
   "org.apache.kafka" % "kafka-clients" % "3.5.2",
   "org.scala-lang" % "scala-library" % "2.13.14",
