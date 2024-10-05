@@ -7,7 +7,7 @@ import scala.io.Source
 import java.util.Properties
 import io.circe.generic.auto._
 import io.circe.syntax._
-import io.circe.parser._
+import java.util.concurrent.{Executors, Future, TimeUnit}
 
 // Case class for Topic 1
 case class CarbonData(ts: Double, device: String, co: Double)
@@ -48,7 +48,7 @@ object Producer extends App {
 
           // Send the record to Kafka
           val record = new ProducerRecord[String, String](topic, null, json)
-          producer.send(record)
+        producer.send(record)
           println(s"Sent to $topic: $json") // Display the data being sent
         } else {
           println(s"Error: Unexpected line format in file '$filePath': $line")
@@ -56,22 +56,43 @@ object Producer extends App {
       }
       source.close() // Don't forget to close the source!
 
-      } catch {
-        case e: FileNotFoundException =>
-          println(s"Error: File '$filePath' not found.")
-        case e: IOException =>
-          println(s"Error: Unable to read file '$filePath'. ${e.getMessage}")
-        case e: Exception =>
-          println(s"Error: An unexpected error occurred while processing file '$filePath'. ${e.getMessage}")
-      }
+    } catch {
+      case e: FileNotFoundException =>
+        println(s"Error: File '$filePath' not found.")
+      case e: IOException =>
+        println(s"Error: Unable to read file '$filePath'. ${e.getMessage}")
+      case e: Exception =>
+        println(s"Error: An unexpected error occurred while processing file '$filePath'. ${e.getMessage}")
+    }
   }
 
   println("Current Working Directory: " + new java.io.File(".").getCanonicalPath)
-  // Send data from two CSV files to different topics
-  sendCsvDataToTopic("../archive/temperature.csv", "topic2", producer)
-  sendCsvDataToTopic("../archive/carbon.csv", "topic1", producer)
-  // Close the producer
+
+  val executor = Executors.newFixedThreadPool(2) // 2 threads for 2 topics
+  val futures: Seq[Future[_]] = Seq(
+    executor.submit(new Runnable {
+      override def run(): Unit = {
+        sendCsvDataToTopic("../archive/carbon.csv", "topic1", producer)
+      }
+    }),
+    executor.submit(new Runnable {
+      override def run(): Unit = {
+        sendCsvDataToTopic("../archive/temperature.csv", "topic2", producer)
+      }
+    })
+  )
+
+  // Shutdown executor and wait for tasks to finish
+  executor.shutdown()
+  try {
+    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+      executor.shutdownNow()
+    }
+  } catch {
+    case e: InterruptedException =>
+      executor.shutdownNow()
+  }
+
+  // Close the producer after all tasks are completed
   producer.close()
 }
-
-

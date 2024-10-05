@@ -22,7 +22,7 @@ case class TempData(ts: Double, device: String, temp: Double)
 object Kstream extends App {
   // Define the configuration for the Streams application
   val props: Properties = new Properties()
-  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-streams-app-v2")
+  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-streams-app-v3")
   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092") 
   props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass.getName)
   props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass.getName)
@@ -30,52 +30,35 @@ object Kstream extends App {
   // Create a StreamsBuilder
   val builder: StreamsBuilder = new StreamsBuilder()
 
-  val allTopics: Set[String] = Set("topic1", "topic2")
-  val allTopicsStream: KStream[String, String] = builder.stream[String, String](allTopics)
+  val topic1 = "topic1"
+  val topic2 = "topic2"
 
-  // Process messages from both topics
+  // Create a stream for each topic
+  val topic1Stream: KStream[String, String] = builder.stream[String, String](topic1)
+  val topic2Stream: KStream[String, String] = builder.stream[String, String](topic2)
+
+  // Merge the streams into one
+  val allTopicsStream: KStream[String, String] = topic1Stream.merge(topic2Stream)
+
+
   allTopicsStream.foreach { (key, value) =>
-    println(s"[Kafka Streams] Consumed message: Key = $key, Value = $value")
+    val transformedData = transformValue(value)
+    println(s"[Kafka Streams] Consumed and transformed message: Key = $key, Value = $transformedData")
   }
-  /*
-  val joinWindow = JoinWindows.of(Duration.ofMinutes(10)) // Set the join window (e.g., 10minutes)
-  // Join the two streams by the ts column (assuming it's part of the value)
-  val joinedStream = topic1Stream
-    .join(topic2Stream)(
-      (value1, value2) => {
-        // Parse the JSON from the value strings
-        val carbonData = decode[CarbonData](value1).getOrElse(CarbonData(0.0, "", 0.0))
-        val tempData = decode[TempData](value2).getOrElse(TempData(0.0, "", 0.0))
-
-        // Transform the timestamp from Unix time to datetime
-        val ts1 = parseTimestamp(carbonData.ts) // Extract and convert ts
-        val ts2 = parseTimestamp(tempData.ts) // Extract and convert ts
-        
-        val transformedData = s"Topic1: $carbonData, Topic2: $tempData, JoinedTS: $ts1, $ts2"
-
-        // Display the transformed data
-        println(transformedData)
-
-        transformedData // Return the transformed data to produce it later
-      },
-      joinWindow 
-    )
-
-  // Produce the joined stream to the new topic
-  joinedStream.to("transform-topic")
-  */
+  
   // Build the topology
   val topology: Topology = builder.build()
-  println(s"Topology Description: ${topology.describe()}") // Print the topology for verification
   val streams: KafkaStreams = new KafkaStreams(topology, props)
 
-  // Add a state listener to log state changes
-  streams.setStateListener((newState, oldState) => {
-    println(s"Kafka Streams state changed from $oldState to $newState")
-  })
   // Start the Streams application
-  streams.start()
-  println("kafka streans app started")
+  try {
+    streams.start()
+    println("Kafka Streams app started")
+  } catch {
+    case e: Exception =>
+      println(s"Error starting Kafka Streams: ${e.getMessage}")
+      e.printStackTrace()
+  }
   // Add shutdown hook to gracefully close the Streams application
   sys.addShutdownHook {
     println("Shutting down Kafka Streams application...")
@@ -86,6 +69,42 @@ object Kstream extends App {
   while (true) {
     Thread.sleep(1000) // Sleep for 1 second
 
+  }
+  // Helper function to parse and transform the ts column from Unix time to datetime
+  def transformValue(value: String): String = {
+    // Parse the JSON string
+    val jsonEither = parse(value)
+
+    jsonEither match {
+      case Left(error) =>
+        s"Error parsing JSON: ${error.getMessage}"
+
+      case Right(json) =>
+        // Check if it contains "co" or "temp" and decode accordingly
+        if (json.hcursor.get[Double]("co").isRight) {
+          json.as[CarbonData] match {
+            case Left(error) =>
+              s"Error decoding JSON as CarbonData: ${error.getMessage}"
+
+            case Right(carbonData) =>
+              // Convert the timestamp to a human-readable format
+              val readableDate = parseTimestamp(carbonData.ts)
+              s"Carbon Data -> Device: ${carbonData.device}, CO: ${carbonData.co}, Timestamp: $readableDate"
+          }
+        } else if (json.hcursor.get[Double]("temp").isRight) {
+          json.as[TempData] match {
+            case Left(error) =>
+              s"Error decoding JSON as TempData: ${error.getMessage}"
+
+            case Right(tempData) =>
+              // Convert the timestamp to a human-readable format
+              val readableDate = parseTimestamp(tempData.ts)
+              s"Temperature Data -> Device: ${tempData.device}, Temp: ${tempData.temp}, Timestamp: $readableDate"
+          }
+        } else {
+          "Unknown data format"
+        }
+    }
   }
   // Helper function to parse and transform the ts column from Unix time to datetime
   def parseTimestamp(ts: Double): String = {
