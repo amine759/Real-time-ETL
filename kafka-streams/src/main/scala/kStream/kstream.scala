@@ -15,6 +15,7 @@ import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.apache.kafka.streams.scala.Serdes._
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.streams.scala.kstream.Produced
 
 case class CarbonData(ts: Double, device: String, co: Double)
 case class TempData(ts: Double, device: String, temp: Double)
@@ -32,6 +33,7 @@ object Kstream extends App {
 
   val topic1 = "topic1"
   val topic2 = "topic2"
+  val transTopic= "trans-topic"
 
   // Create a stream for each topic
   val topic1Stream: KStream[String, String] = builder.stream[String, String](topic1)
@@ -40,12 +42,15 @@ object Kstream extends App {
   // Merge the streams into one
   val allTopicsStream: KStream[String, String] = topic1Stream.merge(topic2Stream)
 
+  val transformedStream: KStream[String, String] = allTopicsStream.mapValues(value => transformValue(value))
 
-  allTopicsStream.foreach { (key, value) =>
-    val transformedData = transformValue(value)
-    println(s"[Kafka Streams] Consumed and transformed message: Key = $key, Value = $transformedData")
+  transformedStream.foreach { (key, transformedValue) =>
+    println(s"[Kafka Streams] Consumed and transformed message: Key = $key, Value = $transformedValue")
   }
   
+  // Send transformed data to the trans-topic
+  transformedStream.to(transTopic)(Produced.`with`(Serdes.String(), Serdes.String()))
+
   // Build the topology
   val topology: Topology = builder.build()
   val streams: KafkaStreams = new KafkaStreams(topology, props)
@@ -87,7 +92,7 @@ object Kstream extends App {
               s"Error decoding JSON as CarbonData: ${error.getMessage}"
 
             case Right(carbonData) =>
-              // Convert the timestamp to a human-readable format
+              // Convert the timestamp format
               val readableDate = parseTimestamp(carbonData.ts)
               s"Carbon Data -> Device: ${carbonData.device}, CO: ${carbonData.co}, Timestamp: $readableDate"
           }

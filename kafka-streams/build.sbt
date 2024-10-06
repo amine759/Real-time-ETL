@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % "2.13.14",
   "ch.qos.logback" % "logback-classic" % "1.2.10", // check for the latest version
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.10.0",
+  "io.circe" %% "circe-core" % "0.14.3",
   "io.circe" %% "circe-generic" % "0.14.3",
   "org.scalameta" %% "munit" % "0.7.29" % Test,
   "io.circe" %% "circe-parser" % "0.14.3"
