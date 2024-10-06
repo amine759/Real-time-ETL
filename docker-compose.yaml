@@ -27,3 +27,18 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
+    container_name: elasticsearch-scala
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # Adjust memory settings as necessary
+      - ELASTIC_PASSWORD=rasta # Set your desired password for the built-in elastic user
+    ports:
+      - "9200:9200"
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
