@@ -102,7 +102,7 @@ object Kstream extends App {
               s"Error decoding JSON as TempData: ${error.getMessage}"
 
             case Right(tempData) =>
-              // Convert the timestamp to a human-readable format
+              // Convert the timestamp format
               val readableDate = parseTimestamp(tempData.ts)
               s"Temperature Data -> Device: ${tempData.device}, Temp: ${tempData.temp}, Timestamp: $readableDate"
           }
