@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % "0.14.3",
   "io.circe" %% "circe-generic" % "0.14.3",
   "org.scalameta" %% "munit" % "0.7.29" % Test,
-  "io.circe" %% "circe-parser" % "0.14.3"
+  "io.circe" %% "circe-parser" % "0.14.3",
+  "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "7.17.0" // Replace with your Elasticsearch version
 )
 
 resolvers += "Maven Central" at "https://repo1.maven.org/maven2/"
