@@ -2,6 +2,11 @@ package consumer
 
 import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
 import org.apache.kafka.common.serialization.StringDeserializer
+import org.elasticsearch.action.index.IndexRequest
+import org.elasticsearch.client.RequestOptions
+import org.elasticsearch.client.RestHighLevelClient
+import org.elasticsearch.client.RestClientBuilder
+import org.elasticsearch.client.RestClient
 import java.util.{Collections, Properties}
 import scala.collection.JavaConverters._
 
@@ -20,11 +25,17 @@ object Consumer extends App {
   // Subscribe to the trans-topic
   consumer.subscribe(java.util.Arrays.asList("trans-topic"))
 
+  // Initialize Elasticsearch client
+  val elasticsearchClient = new RestHighLevelClient(
+    RestClient.builder(new RestClientBuilder.HttpHost("localhost", 9200, "http")) // Change host and port if needed
+  )
+
   // Add shutdown hook to close the consumer gracefully
   sys.addShutdownHook {
     println("Shutting down the consumer...")
     consumer.wakeup() // Interrupt the polling loop if it's blocked
     consumer.close() // Close the consumer
+    elasticsearchClient.close() // Close the Elasticsearch client
   }
 
   // Poll for new data from the topic
@@ -33,6 +44,14 @@ object Consumer extends App {
       val records = consumer.poll(java.time.Duration.ofMillis(1000))
       for (record <- records.asScala) {
         println(s"Consumed message from topic ${record.topic()}: ${record.value()}")
+
+        // Create an index request for Elasticsearch
+        val indexRequest = new IndexRequest("kafka-stream-index") // Specify your index name
+          .id(record.offset().toString) // Optionally specify an ID
+          .source("message", record.value()) // Specify the document to index
+
+        // Index the document
+        elasticsearchClient.index(indexRequest, RequestOptions.DEFAULT)
       }
     }
   } catch {
