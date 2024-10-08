@@ -1,0 +1,46 @@
+# /kafka-streams/k8s/producer-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer-service
+  labels:
+    app: producer-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: producer-service
+  template:
+    metadata:
+      labels:
+        app: producer-service
+    spec:
+      containers:
+        - name: producer-service
+          image: yourdockerhubusername/producer-service:0.1.0
+          ports:
+            - containerPort: 8081
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9092" # Adjust based on your Kafka setup
+            - name: SOME_OTHER_ENV_VAR
+              value: "value" # Add other environment variables as needed
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10

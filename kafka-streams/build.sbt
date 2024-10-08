@@ -1,21 +1,96 @@
-name := "kafka-streams"
-version := "0.1"
+// /kafka-streams/build.sbt
 
-scalaVersion := "2.13.14"
+import sbt._
+import Keys._
+import Dependencies._
+import sbtassembly.AssemblyPlugin.autoImport._
 
-libraryDependencies ++= Seq(
-  "org.apache.kafka" %% "kafka-streams-scala" % "3.5.2",
-  "org.apache.kafka" % "kafka-clients" % "3.5.2",
-  "org.scala-lang" % "scala-library" % "2.13.14",
-  "ch.qos.logback" % "logback-classic" % "1.2.10", // check for the latest version
-  "org.scala-lang.modules" %% "scala-collection-compat" % "2.10.0",
-  "io.circe" %% "circe-core" % "0.14.3",
-  "io.circe" %% "circe-generic" % "0.14.3",
-  "org.scalameta" %% "munit" % "0.7.29" % Test,
-  "io.circe" %% "circe-parser" % "0.14.3",
-  "org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "7.17.0" // Replace with your Elasticsearch version
-)
+lazy val root = (project in file("."))
+  .aggregate(consumer, producer, kStream)
+  .settings(
+    name := "kafka-streams-microservices",
+    version := "0.1.0",
+    scalaVersion := "2.13.14",
+    libraryDependencies ++= Seq(
+      commonConfig// Common dependency across microservices
+      // Add other common dependencies here if needed
+    ),
+    resolvers += "Maven Central" at "https://repo1.maven.org/maven2/"
+  )
 
-resolvers += "Maven Central" at "https://repo1.maven.org/maven2/"
+lazy val consumer = (project in file("consumer"))
+  .settings(
+    name := "consumer-service",
+    libraryDependencies ++= Seq(
+      kafkaStreamsScala,
+      kafkaClients,
+      logbackClassic,
+      scalaCollectionCompat,
+      circeCore,
+      circeGeneric,
+      circeParser,
+      elasticsearchRestClient,
+      munit
+    ),
+    testFrameworks += new TestFramework("munit.Framework"),
 
-// Add any other dependencies you need
+    // sbt-assembly settings
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    },
+    assembly / mainClass := Some("consumer.Consumer") // Replace with your actual main class
+
+  )
+
+lazy val producer = (project in file("producer"))
+  .settings(
+    name := "producer-service",
+    libraryDependencies ++= Seq(
+      kafkaStreamsScala,
+      kafkaClients,
+      logbackClassic,
+      scalaCollectionCompat,
+      circeCore,
+      circeGeneric,
+      circeParser,
+      munit
+      // Add producer-specific dependencies here
+    ),
+    testFrameworks += new TestFramework("munit.Framework"),
+
+    // sbt-assembly settings
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    },
+    assembly / mainClass := Some("producer.Producer") // Replace with your actual main class
+
+    // Optional: sbt-scalafmt settings
+    // Uncomment if using sbt-scalafmt
+    // , scalafmtConfig := file(".scalafmt.conf")
+  )
+
+lazy val kStream = (project in file("kStream"))
+  .settings(
+    name := "kStream-service",
+    libraryDependencies ++= Seq(
+      kafkaStreamsScala,
+      kafkaClients,
+      logbackClassic,
+      scalaCollectionCompat,
+      circeCore,
+      circeGeneric,
+      circeParser,
+      munit
+      // Add kStream-specific dependencies here
+    ),
+    testFrameworks += new TestFramework("munit.Framework"),
+
+    // sbt-assembly settings
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    },
+    assembly / mainClass := Some("kStream.Kstream") // Replace with your actual main class
+  )
