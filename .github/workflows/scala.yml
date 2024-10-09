@@ -29,8 +29,9 @@ jobs:
         distribution: 'temurin'
         cache: 'sbt'
 
-    # Run tests for all services (before building Docker images)
-    - name: Run tests for all services
+    # Change working directory to microservice folder and run tests
+    - name: Run tests for ${{ matrix.service }} service
+      working-directory: ./kafka-streams/${{ matrix.service }}
       run: sbt test
 
     # Log in to Docker Hub
@@ -41,10 +42,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # Build and push Docker image for each microservice
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ${{ matrix.service }}/Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_USER }}/${{ matrix.service }}:latest
+    - name: Build and push ${{ matrix.service }} image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USER }}/${{ matrix.service }}-service:latest ./kafka-streams/${{ matrix.service }}
+        docker push ${{ secrets.DOCKER_USER }}/${{ matrix.service }}-service:latest
