@@ -12,7 +12,7 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /app
 
 # Copy the fat JAR into the container
-COPY target/scala-2.12/kStream-service-assembly-0.1.0-SNAPSHOT.jar kStream-service.jar
+COPY target/scala-2.12/kstream-service-assembly-0.1.0-SNAPSHOT.jar kstream-service.jar
 
 # Change ownership to the non-root user
 RUN chown -R appuser:appgroup /app
@@ -24,4 +24,4 @@ USER appuser
 EXPOSE 8082
 
 # Define the entrypoint to run the JAR
-ENTRYPOINT ["java", "-jar", "kStream-service.jar"]
+ENTRYPOINT ["java", "-jar", "kstream-service.jar"]
