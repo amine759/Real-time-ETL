@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "kafka-streams-microservices",
     version := "0.1.0",
-    scalaVersion := "2.13.14",
+    scalaVersion := "2.12.19",
     libraryDependencies ++= Seq(
       commonConfig// Common dependency across microservices
       // Add other common dependencies here if needed
