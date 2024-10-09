@@ -64,5 +64,5 @@ jobs:
     # Build and push Docker image for each microservice
     - name: Build and push ${{ matrix.service }} image
       run: |
-        docker build -t ${{ secrets.DOCKER_USER }}/${{ matrix.service }}-service:latest -f ./kafka-streams/${{ matrix.service }}/Dockerfile ./kafka-streams/${{ matrix.service }}
+        docker build -t ${{ secrets.DOCKER_USER }}/${{ matrix.service }}-service:latest -f ./kafka-streams/${{ matrix.service }}/Dockerfile ./kafka-streams
         docker push ${{ secrets.DOCKER_USER }}/${{ matrix.service }}-service:latest
