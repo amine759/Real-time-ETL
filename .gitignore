@@ -2,13 +2,14 @@ blabla.sh
 # SBT files
 *.class
 *.log
-*.jar
 *.war
+*.jar
 *.ear
 
 # Target directories
 target/
 kafka-streams/.metals/
+kafka-streams/target
 # If you have any other target directories in submodules, you might want to include those as well
 
 # IDE specific files (I use neovim btw)

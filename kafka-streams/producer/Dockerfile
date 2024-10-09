@@ -12,7 +12,7 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /app
 
 # Copy the fat JAR into the container
-COPY ./target/scala-2.12/producer-service-assembly-0.1.0-SNAPSHOT.jar producer-service.jar
+COPY target/scala-2.12/producer-service-assembly-0.1.0-SNAPSHOT.jar producer-service.jar
 
 # Change ownership to the non-root user
 RUN chown -R appuser:appgroup /app

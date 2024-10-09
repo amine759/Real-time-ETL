@@ -1,6 +1,4 @@
 # Exclude the build artifacts directory
-target/
-
 # Exclude SBT and Scala temporary files
 .project/
 .idea/
