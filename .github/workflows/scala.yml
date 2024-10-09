@@ -32,7 +32,7 @@ jobs:
     - name: Set up SBT
       uses: olafurpg/setup-scala@v10
       with:
-        sbt-version: '1.8.2'  # Ensure this matches your build.properties
+        sbt-version: '1.10.2'  # Ensure this matches your build.properties
 
     # 4. Cache SBT dependencies
     - name: Cache SBT dependencies
