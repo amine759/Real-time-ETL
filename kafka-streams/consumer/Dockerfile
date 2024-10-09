@@ -11,6 +11,7 @@ COPY ../src ./src
 # Build the fat JAR
 RUN sbt clean assembly
 
+sbt "project consumer" assembly
 # Stage 2: Create the runtime image
 
 FROM openjdk:11-jre-slim
