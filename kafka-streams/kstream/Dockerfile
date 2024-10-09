@@ -9,7 +9,7 @@ COPY ../project ./project
 COPY ../src ./src
 
 # Build the fat JAR
-RUN sbt assembly
+RUN sbt clean assembly
 
 FROM openjdk:11-jre-slim
 

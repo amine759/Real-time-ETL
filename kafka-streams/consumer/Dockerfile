@@ -9,7 +9,7 @@ COPY ../build.sbt ./build.sbt
 COPY ../project ./project
 COPY ../src ./src
 # Build the fat JAR
-RUN sbt assembly
+RUN sbt clean assembly
 
 # Stage 2: Create the runtime image
 
