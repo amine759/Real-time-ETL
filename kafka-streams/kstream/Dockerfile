@@ -11,7 +11,7 @@ COPY ../src ./src
 # Build the fat JAR
 RUN sbt clean assembly
 
-sbt "project kstream" assembly
+RUN sbt "project kstream" assembly
 FROM openjdk:11-jre-slim
 
 # Metadata
