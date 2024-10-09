@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM hseeberger/scala-sbt:latest as builder
+FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 
 # Set the working directory for the build stage
 WORKDIR /app
