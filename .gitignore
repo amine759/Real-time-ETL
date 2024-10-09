@@ -5,7 +5,6 @@ blabla.sh
 *.jar
 *.war
 *.ear
-*.sbt
 
 # Target directories
 target/
