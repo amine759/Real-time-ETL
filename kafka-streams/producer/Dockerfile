@@ -5,10 +5,9 @@ from hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 WORKDIR /app
 
 # Copy the SBT configuration files and source code
-COPY build.sbt ./build.sbt
-COPY project ./project
-COPY src ./src
-
+COPY ../build.sbt ./build.sbt
+COPY ../project ./project
+COPY ../src ./src
 # Build the fat JAR
 RUN sbt assembly
 
