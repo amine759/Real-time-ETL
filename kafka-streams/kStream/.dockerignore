@@ -1,0 +1,13 @@
+# Exclude the build artifacts directory
+target/
+
+# Exclude SBT and Scala temporary files
+.project/
+.idea/
+*.iml
+*.log
+*.tmp
+
+# Exclude Git directory and files
+.git
+.gitignore
