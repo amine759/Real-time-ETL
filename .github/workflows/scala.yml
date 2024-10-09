@@ -28,7 +28,23 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: 'sbt'
+    # 3. Set up SBT
+    - name: Set up SBT
+      uses: olafurpg/setup-scala@v10
+      with:
+        sbt-version: '1.8.2'  # Ensure this matches your build.properties
 
+    # 4. Cache SBT dependencies
+    - name: Cache SBT dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.ivy2/cache
+          ~/.sbt
+          ~/.coursier
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}-${{ hashFiles('**/project/plugins.sbt') }}
+        restore-keys: |
+          ${{ runner.os }}-sbt-
     # Change working directory to microservice folder and run tests
     - name: Run tests 
       working-directory: ./kafka-streams
