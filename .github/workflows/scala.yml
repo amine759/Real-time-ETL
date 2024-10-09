@@ -30,8 +30,8 @@ jobs:
         cache: 'sbt'
 
     # Change working directory to microservice folder and run tests
-    - name: Run tests for ${{ matrix.service }} service
-      working-directory: ./kafka-streams/${{ matrix.service }}
+    - name: Run tests 
+      working-directory: ./kafka-streams
       run: sbt test
 
     # Log in to Docker Hub
