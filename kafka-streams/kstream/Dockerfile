@@ -1,4 +1,16 @@
-# Use an official OpenJDK runtime as a parent image
+from hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
+
+# Set the working directory for the build stage
+WORKDIR /app
+
+# Copy the SBT configuration files and source code
+COPY ../build.sbt ./build.sbt
+COPY ../project ./project
+COPY src ./src
+
+# Build the fat JAR
+RUN sbt assembly
+
 FROM openjdk:11-jre-slim
 
 # Metadata
