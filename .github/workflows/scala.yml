@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [producer, kStream, consumer]  # Microservices list
+        service: [producer, kstream, consumer]  # Microservices list
 
     steps:
     # Checkout code
