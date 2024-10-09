@@ -9,8 +9,7 @@ COPY ../build.sbt ./build.sbt
 COPY ../project ./project
 COPY ../src ./src
 # Build the fat JAR
-RUN sbt clean assembly
-RUN sbt "project producer" assembly
+RUN sbt "project producer" clean assembly
 
 RUN ls -l /app/
 RUN ls -l /app/target/
