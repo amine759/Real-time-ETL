@@ -3,7 +3,7 @@
 import sbt._
 import Keys._
 import Dependencies._
-import sbtassembly.AssemblyPlugin.autoImport._
+import sbtuniversal.UniversalPlugin.autoImport._
 
 lazy val root = (project in file("."))
   .aggregate(consumer, producer, kStream)
@@ -12,7 +12,7 @@ lazy val root = (project in file("."))
     version := "0.1.0",
     scalaVersion := "2.12.19",
     libraryDependencies ++= Seq(
-      commonConfig// Common dependency across microservices
+      commonConfig // Common dependency across microservices
       // Add other common dependencies here if needed
     ),
     resolvers += "Maven Central" at "https://repo1.maven.org/maven2/"
@@ -34,13 +34,14 @@ lazy val consumer = (project in file("consumer"))
     ),
     testFrameworks += new TestFramework("munit.Framework"),
 
+    // Universal settings
+    universal / mainClass := Some("consumer.Consumer"), // Replace with your actual main class
+
     // sbt-assembly settings
     assembly / assemblyMergeStrategy := {
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case x => MergeStrategy.first
-    },
-    assembly / mainClass := Some("consumer.Consumer") // Replace with your actual main class
-
+    }
   )
 
 lazy val producer = (project in file("producer"))
@@ -59,16 +60,8 @@ lazy val producer = (project in file("producer"))
     ),
     testFrameworks += new TestFramework("munit.Framework"),
 
-    // sbt-assembly settings
-    assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-      case x => MergeStrategy.first
-    },
-    assembly / mainClass := Some("producer.Producer") // Replace with your actual main class
-
-    // Optional: sbt-scalafmt settings
-    // Uncomment if using sbt-scalafmt
-    // , scalafmtConfig := file(".scalafmt.conf")
+    // Universal settings
+    universal / mainClass := Some("producer.Producer"), // Replace with your actual main class
   )
 
 lazy val kStream = (project in file("kStream"))
@@ -87,10 +80,6 @@ lazy val kStream = (project in file("kStream"))
     ),
     testFrameworks += new TestFramework("munit.Framework"),
 
-    // sbt-assembly settings
-    assembly / assemblyMergeStrategy := {
-      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-      case x => MergeStrategy.first
-    },
-    assembly / mainClass := Some("kStream.Kstream") // Replace with your actual main class
+    // Universal settings
+    universal / mainClass := Some("kStream.Kstream") // Replace with your actual main class
   )

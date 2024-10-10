@@ -1,5 +1,4 @@
 package producer
-
 import java.io.{FileNotFoundException, IOException}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
