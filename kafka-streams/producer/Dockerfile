@@ -6,8 +6,7 @@ WORKDIR /app
 
 # Copy the root build files
 
-RUN ls ../
-RUN ls  ../../
+RUN ls ../../archive
 
 COPY ../build.sbt /app/
 COPY ../project /app/project/
