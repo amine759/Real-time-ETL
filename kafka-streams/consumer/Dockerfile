@@ -9,7 +9,7 @@ COPY ../build.sbt /app/
 COPY ../project /app/project/
 
 # Copy the consumer module
-COPY . /app/consumer/
+COPY consumer /app/consumer/
 
 # Navigate to the consumer project and build the assembly JAR
 RUN sbt "project consumer" clean assembly

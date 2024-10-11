@@ -9,7 +9,7 @@ COPY ../build.sbt /app/
 COPY ../project /app/project/
 
 # Copy the kStream module
-COPY . /app/kStream/
+COPY kstream pp/kStream/
 
 # Navigate to the kStream project and build the assembly JAR
 RUN sbt "project kStream" clean assembly
