@@ -16,7 +16,7 @@ case class AppConfig(
 object Config {
   def load(): AppConfig = {
     AppConfig(
-      kafkaBootstrapServers = "localhost:9092",
+      kafkaBootstrapServers = "broker:9092",
       kafkaGroupId = "csv-consumer-group",
       kafkaTopic = "trans-topic",
       elasticsearchHost = "localhost",

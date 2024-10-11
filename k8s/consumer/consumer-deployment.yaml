@@ -1,9 +1,13 @@
+# deployments/consumer-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: consumer-service
+  name: consumer-deployment
+  namespace: kafka
+  labels:
+    app: consumer-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: consumer-service
@@ -13,12 +17,12 @@ spec:
         app: consumer-service
     spec:
       containers:
-        - name: consumer-service
-          image: yourdockerhubusername/consumer-service:0.1.0
-          ports:
-            - containerPort: 8080
-          env:
-            - name: KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka:9092" # Adjust based on your Kafka setup
-            - name: ELASTICSEARCH_HOST
-              value: "elasticsearch:9200" # Adjust based on your Elasticsearch setup
+      - name: consumer-service
+        image: consumer-service:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: consumer-config
+        - secretRef:
+            name: elasticsearch-secret

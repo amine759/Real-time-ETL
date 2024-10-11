@@ -1,4 +1,5 @@
 package producer
+
 import java.io.{FileNotFoundException, IOException}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
@@ -15,9 +16,11 @@ case class TempData(ts: Double, device: String, temp: Double)
 object Producer extends App {
   // Producer configuration
   val props: Properties = new Properties()
-  props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
-  props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
-  props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
+  val config = Config.load()
+  
+  kafkaProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafkaBootstrapServers)
+  kafkaProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
+  kafkaProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
 
   // Create Kafka producer
   val producer = new KafkaProducer[String, String](props)
@@ -71,12 +74,12 @@ object Producer extends App {
   val futures: Seq[Future[_]] = Seq(
     executor.submit(new Runnable {
       override def run(): Unit = {
-        sendCsvDataToTopic("../archive/carbon.csv", "topic1", producer)
+        sendCsvDataToTopic("/app/archive/carbon.csv", "topic1", producer)
       }
     }),
     executor.submit(new Runnable {
       override def run(): Unit = {
-        sendCsvDataToTopic("../archive/temperature.csv", "topic2", producer)
+        sendCsvDataToTopic("/app/archive/temperature.csv", "topic2", producer)
       }
     })
   )

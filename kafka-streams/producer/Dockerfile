@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy the root build files
 COPY ../build.sbt /app/
 COPY ../project /app/project/
+COPY ../../archive /app/archive/
 
 # Copy the producer module
 COPY producer /app/producer/

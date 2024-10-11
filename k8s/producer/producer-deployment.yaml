@@ -2,7 +2,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: producer-service
+  name: producer-deployment
+  namespace: kafka
   labels:
     app: producer-service
 spec:
@@ -17,12 +18,12 @@ spec:
     spec:
       containers:
         - name: producer-service
-          image: yourdockerhubusername/producer-service:0.1.0
+          image: krizalid69/producer-service:latest
           ports:
             - containerPort: 8081
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka:9092" # Adjust based on your Kafka setup
+              value: "broker:9092" # Adjust based on your Kafka setup
             - name: SOME_OTHER_ENV_VAR
               value: "value" # Add other environment variables as needed
           resources:
