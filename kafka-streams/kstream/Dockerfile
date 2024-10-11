@@ -5,9 +5,8 @@ FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 WORKDIR /app
 
 # Copy the root build files
-COPY ../../build.sbt /app/
-COPY ../../project /app/project/
-COPY ../../../archive /app/archive/
+COPY kafka-streams/build.sbt /app/
+COPY kafka-streams/project /app/project/
 
 # Copy the kStream module
 COPY kafka-streams/kstream /app/kstream/
