@@ -11,7 +11,7 @@ COPY ../../../archive /app/archive/
 
 
 # Copy the producer module
-COPY producer /app/producer/
+COPY kafka-streams/producer /app/producer/
 
 # Navigate to the producer project and build the assembly JAR
 RUN sbt "project producer" clean assembly
