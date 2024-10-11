@@ -8,10 +8,10 @@ WORKDIR /app
 
 RUN ls -la ../
 RUN ls -la ../../
+
 COPY ../build.sbt /app/
 COPY ../project /app/project/
-COPY ../../archive /app/archive/
-COPY ../../archive /app/archive/
+COPY ../archive /app/archive/
 
 
 # Copy the producer module
