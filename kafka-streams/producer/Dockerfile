@@ -6,11 +6,11 @@ WORKDIR /app
 
 # Copy the root build files
 
-RUN ls ../../archive
+RUN ls -la ../../archive
 
 COPY ../build.sbt /app/
 COPY ../project /app/project/
-COPY ../../archive /app/archive/
+COPY archive /app/archive/
 
 
 # Copy the producer module
