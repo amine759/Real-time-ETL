@@ -9,7 +9,7 @@ COPY kafka-streams/build.sbt /app/
 COPY kafka-streams/project /app/project/
 
 # Copy the kStream module
-COPY kafka-streams/kstream /app/kstream/
+COPY kafka-streams/kStream /app/kstream/
 
 # Navigate to the kStream project and build the assembly JAR
 RUN sbt "project kStream" clean assembly
