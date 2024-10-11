@@ -15,15 +15,15 @@ case class TempData(ts: Double, device: String, temp: Double)
 
 object Producer extends App {
   // Producer configuration
-  val props: Properties = new Properties()
+  val kafkaprops: Properties = new Properties()
   val config = Config.load()
   
-  kafkaProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafkaBootstrapServers)
-  kafkaProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
-  kafkaProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
+  kafkaprops.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafkaBootstrapServers)
+  kafkaprops.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
+  kafkaprops.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
 
   // Create Kafka producer
-  val producer = new KafkaProducer[String, String](props)
+  val producer = new KafkaProducer[String, String](kafkaprops)
 
   // Function to read CSV and send data to Kafka topic
   def sendCsvDataToTopic(filePath: String, topic: String, producer: KafkaProducer[String, String]): Unit = {
