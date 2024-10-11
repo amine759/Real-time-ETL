@@ -5,13 +5,14 @@ FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 WORKDIR /app
 
 # Copy the root build files
+
+RUN ls -la ../
+RUN ls -la ../../
 COPY ../build.sbt /app/
 COPY ../project /app/project/
 COPY ../../archive /app/archive/
 COPY ../../archive /app/archive/
 
-RUN ls -la ../
-RUN ls -la ../../
 
 # Copy the producer module
 COPY producer /app/producer/
