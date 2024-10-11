@@ -1,17 +1,20 @@
-# Use an official OpenJDK runtime as a parent image
-from hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
+# Stage 1: Build the assembly JAR using sbt
+FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 
-# Set the working directory for the build stage
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the SBT configuration files and source code
-COPY ../build.sbt ./build.sbt
-COPY ../project ./project
-COPY ../src ./src
-# Build the fat JAR
-RUN sbt "project consumer" clean assembly
-# Stage 2: Create the runtime image
+# Copy the root build files
+COPY ../build.sbt /app/
+COPY ../project /app/project/
 
+# Copy the consumer module
+COPY . /app/consumer/
+
+# Navigate to the consumer project and build the assembly JAR
+RUN sbt "project consumer" clean assembly
+
+# Stage 2: Create the runtime image
 FROM openjdk:11-jre-slim
 
 # Metadata
@@ -24,17 +27,17 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 # Set the working directory
 WORKDIR /app
 
-# Copy the fat JAR into the container
-COPY --from=builder /app/target/scala-2.12/consumer-service-assembly-0.1.0-SNAPSHOT.jar consumer-service.jar
+# Copy the assembly JAR from the builder stage
+COPY --from=builder /app/consumer/target/scala-2.12/consumer-service-assembly-0.1.0-SNAPSHOT.jar app.jar
 
 # Change ownership to the non-root user
-RUN chown -R appuser:appgroup /app
+RUN chown appuser:appgroup app.jar
 
 # Switch to the non-root user
 USER appuser
 
-# Expose the application port (if applicable)
+# Expose the application port
 EXPOSE 8080
 
-# Define the entrypoint to run the JAR
-ENTRYPOINT ["java", "-jar", "consumer-service.jar"]
+# Define the entrypoint to run the service
+ENTRYPOINT ["java", "-jar", "app.jar"]

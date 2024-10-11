@@ -1,22 +1,25 @@
-from hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
+# Stage 1: Build the assembly JAR using sbt
+FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 
-# Set the working directory for the build stage
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the SBT configuration files and source code
-COPY ../build.sbt ./build.sbt
-COPY ../project ./project
-COPY ../src ./src
+# Copy the root build files
+COPY ../build.sbt /app/
+COPY ../project /app/project/
 
-# Build the fat JAR
+# Copy the kStream module
+COPY . /app/kStream/
 
-RUN sbt "project kstream" clean assembly
+# Navigate to the kStream project and build the assembly JAR
+RUN sbt "project kStream" clean assembly
 
+# Stage 2: Create the runtime image
 FROM openjdk:11-jre-slim
 
 # Metadata
 LABEL maintainer="amine@rasta.com"
-LABEL description="kStream Processor Service for Kafka Streams ETL"
+LABEL description="kStream Service for Kafka Streams ETL"
 
 # Create a non-root user and group
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
@@ -24,17 +27,17 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 # Set the working directory
 WORKDIR /app
 
-# Copy the fat JAR into the container
-COPY --from=builder /app/target/scala-2.12/kStream-service-assembly-0.1.0-SNAPSHOT.jar kstream-service.jar
+# Copy the assembly JAR from the builder stage
+COPY --from=builder /app/kStream/target/scala-2.12/kStream-service-assembly-0.1.0-SNAPSHOT.jar app.jar
 
 # Change ownership to the non-root user
-RUN chown -R appuser:appgroup /app
+RUN chown appuser:appgroup app.jar
 
 # Switch to the non-root user
 USER appuser
 
-# Expose the application port (if applicable)
+# Expose the application port
 EXPOSE 8082
 
-# Define the entrypoint to run the JAR
-ENTRYPOINT ["java", "-jar", "kstream-service.jar"]
+# Define the entrypoint to run the service
+ENTRYPOINT ["java", "-jar", "app.jar"]
