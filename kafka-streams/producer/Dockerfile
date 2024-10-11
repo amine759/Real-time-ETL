@@ -9,11 +9,11 @@ COPY ../build.sbt /app/
 COPY ../project /app/project/
 
 # Copy the producer module
-COPY . /app/producer/
+COPY producer /app/producer/
 
 # Navigate to the producer project and build the assembly JAR
 RUN sbt "project producer" clean assembly
-RUN ls -l /app/target/scala-2.12/
+RUN ls -l /app/target/
 # Stage 2: Create the runtime image
 FROM openjdk:11-jre-slim
 
