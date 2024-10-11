@@ -4,13 +4,10 @@ FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the root build files
 
-RUN ls -la ../../archive
-
-COPY ../build.sbt /app/
-COPY ../project /app/project/
-COPY archive /app/archive/
+COPY ../../build.sbt /app/
+COPY ../../project /app/project/
+COPY ../../../archive /app/archive/
 
 
 # Copy the producer module
