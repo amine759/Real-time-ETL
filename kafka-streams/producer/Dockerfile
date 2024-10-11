@@ -15,7 +15,6 @@ COPY kafka-streams/producer /app/producer/
 
 # Navigate to the producer project and build the assembly JAR
 RUN sbt "project producer" clean assembly
-RUN ls -l /app/target/
 # Stage 2: Create the runtime image
 FROM openjdk:11-jre-slim
 

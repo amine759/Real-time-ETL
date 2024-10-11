@@ -5,11 +5,12 @@ FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 WORKDIR /app
 
 # Copy the root build files
-COPY ../build.sbt /app/
-COPY ../project /app/project/
+COPY ../../build.sbt /app/
+COPY ../../project /app/project/
+COPY ../../../archive /app/archive/
 
-# Copy the consumer module
-COPY consumer /app/consumer/
+# Copy the kStream module
+COPY kafka-streams/consumer /app/consumer/
 
 # Navigate to the consumer project and build the assembly JAR
 RUN sbt "project consumer" clean assembly

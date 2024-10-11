@@ -5,11 +5,12 @@ FROM hseeberger/scala-sbt:11.0.5_1.3.6_2.13.1 as builder
 WORKDIR /app
 
 # Copy the root build files
-COPY ../build.sbt /app/
-COPY ../project /app/project/
+COPY ../../build.sbt /app/
+COPY ../../project /app/project/
+COPY ../../../archive /app/archive/
 
 # Copy the kStream module
-COPY kstream pp/kStream/
+COPY kafka-streams/kstream /app/kstream/
 
 # Navigate to the kStream project and build the assembly JAR
 RUN sbt "project kStream" clean assembly
@@ -28,7 +29,7 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /app
 
 # Copy the assembly JAR from the builder stage
-COPY --from=builder /app/kStream/target/scala-2.12/kStream-service-assembly-0.1.0-SNAPSHOT.jar app.jar
+COPY --from=builder /app/kstream/target/scala-2.12/kStream-service-assembly-0.1.0-SNAPSHOT.jar app.jar
 
 # Change ownership to the non-root user
 RUN chown appuser:appgroup app.jar
