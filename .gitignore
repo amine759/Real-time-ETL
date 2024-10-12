@@ -5,11 +5,11 @@ blabla.sh
 *.war
 *.jar
 *.ear
-
+*.metals
 # Target directories
 target/
-kafka-streams/.metals/
 kafka-streams/target
+kafka-streams/.bsp
 # If you have any other target directories in submodules, you might want to include those as well
 
 # IDE specific files (I use neovim btw)
