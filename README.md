@@ -1,20 +1,8 @@
 # Real-time-ETL
+Real time ETL Pipeline in kafka Streams and Scala in a microservice architecture, Running on kubernetes
 ## To run : 
 You will need scala 2 installed, checkout the dependencies in [build.sbt](kafka-streams/build.sbt)
-
+Clone and then Deploy the Pipeline in your cluster :
 ```bash
-docker compose up -d
+k apply -f ./k8s
 ```
-navigate to `/kafka-streams` directory and install dependencies :
-```bash
-sbt update
-```
-
-run every component of the pipeline as follows : 
-```bash
-sbt "runMain producer.Producer"
-sbt "runMain kStream.Kstream"
-sbt "runMain consumer.Consumer"
-```
-
-
