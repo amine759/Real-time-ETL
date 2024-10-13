@@ -7,7 +7,7 @@ metadata:
   labels:
     app: kstream-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: kstream-service
@@ -26,22 +26,7 @@ spec:
               value: "broker:9092" # Adjust based on your Kafka setup
             - name: SOME_OTHER_ENV_VAR
               value: "value" # Add other environment variables as needed
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8082
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 8082
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            - name: KAFKA_TOPIC_1
+              value: "topic1"
+            - name: KAFKA_TOPIC_2
+              value: "topic2"
