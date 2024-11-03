@@ -70,7 +70,7 @@ lazy val producer = (project in file("producer"))
     // , scalafmtConfig := file(".scalafmt.conf")
   )
 
-lazy val kStream = (project in file("kstream"))
+lazy val kStream = (project in file("kStream"))
   .settings(
     name := "kStream-service",
     libraryDependencies ++= Seq(
@@ -91,5 +91,5 @@ lazy val kStream = (project in file("kstream"))
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case x => MergeStrategy.first
     },
-    assembly / mainClass := Some("kstream.Kstream") // Replace with your actual main class
+    assembly / mainClass := Some("kStream.Kstream") // Replace with your actual main class
   )
