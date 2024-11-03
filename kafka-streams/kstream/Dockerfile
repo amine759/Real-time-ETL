@@ -9,10 +9,10 @@ COPY kafka-streams/build.sbt /app/
 COPY kafka-streams/project /app/project/
 
 # Copy the kStream module
-COPY kafka-streams/kstream /app/kstream/
+COPY kafka-streams/kStream /app/kstream/
 
 # Navigate to the kStream project and build the assembly JAR
-RUN sbt "project kstream" clean assembly
+RUN sbt "project kStream" clean assembly
 
 # Stage 2: Create the runtime image
 FROM openjdk:11-jre-slim

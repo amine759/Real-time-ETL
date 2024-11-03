@@ -1,4 +1,4 @@
-package kstream
+package kStream
 
 import org.apache.kafka.streams.scala.StreamsBuilder
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
