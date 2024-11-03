@@ -21,7 +21,7 @@ spec:
           image: krizalid69/kstream-service:latest
           ports:
             - containerPort: 8082
-          env:
+          env:  
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: "broker:9092" # Adjust based on your Kafka setup
             - name: SOME_OTHER_ENV_VAR
