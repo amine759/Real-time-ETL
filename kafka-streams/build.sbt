@@ -63,8 +63,9 @@ lazy val producer = (project in file("producer"))
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case x => MergeStrategy.first
     },
-    assembly / mainClass := Some("producer.Producer") // Replace with your actual main class
+    assembly / mainClass := Some("producer.Producer"), // Replace with your actual main class
 
+    unmanagedResourceDirectories in Compile += baseDirectory.value / "archive"
     // Optional: sbt-scalafmt settings
     // Uncomment if using sbt-scalafmt
     // , scalafmtConfig := file(".scalafmt.conf")

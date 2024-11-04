@@ -1,11 +1,9 @@
-# /kafka-streams/k8s/producer-deployment.yaml
+# producer-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: producer-deployment
   namespace: kafka
-  labels:
-    app: producer-service
 spec:
   replicas: 1 
   selector:
@@ -23,8 +21,15 @@ spec:
             - containerPort: 8080
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
-              value: "broker:9092" # Adjust based on your Kafka setup
+              value: "broker:9092" 
             - name: KAFKA_TOPIC_1
               value: "topic1"
             - name: KAFKA_TOPIC_2
               value: "topic2"
+          volumeMounts:
+            - mountPath: "/app/archive"  # Path where container will access data
+              name: docker-data
+      volumes:
+        - name: docker-data
+          persistentVolumeClaim:
+            claimName: docker-data-pvc

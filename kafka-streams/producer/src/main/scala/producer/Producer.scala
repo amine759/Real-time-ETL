@@ -74,12 +74,12 @@ object Producer extends App {
   val futures: Seq[Future[_]] = Seq(
     executor.submit(new Runnable {
       override def run(): Unit = {
-        sendCsvDataToTopic("/app/archive/carbon.csv", "topic1", producer)
+        sendCsvDataToTopic("/app/archive/data/carbon.csv", "topic1", producer)
       }
     }),
     executor.submit(new Runnable {
       override def run(): Unit = {
-        sendCsvDataToTopic("/app/archive/temperature.csv", "topic2", producer)
+        sendCsvDataToTopic("/app/archive/data/temperature.csv", "topic2", producer)
       }
     })
   )
